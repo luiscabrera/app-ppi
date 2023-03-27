@@ -1,14 +1,23 @@
 import React from "react";
+import "./styles.css";
 
 const Input = ({ label, value, onChange }) => {
   const handleChange = (e) => {
-    onChange(e.target.value);
+    const amount = e.target.value;
+    if (amount >= 0) {
+      onChange(amount);
+    }
   };
 
   return (
     <div className="input">
       <p>{label}</p>
-      <input type="text" value={value} onChange={handleChange} />
+      <input type="number" value={value} onChange={handleChange} />
+      {value < 0 && (
+        <div className="validation">
+          <p>Amount cannot be negative</p>
+        </div>
+      )}
     </div>
   );
 };
