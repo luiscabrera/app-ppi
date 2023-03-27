@@ -1,8 +1,9 @@
 import React from "react";
-import Button from "../button";
+import IconButton from "../icon-button";
 import CardInformation from "../card-information";
 import Input from "../input";
 import Select from "../select/select";
+import { MdCurrencyExchange } from "react-icons/md";
 import "./styles.css";
 
 const CardExchange = ({
@@ -37,7 +38,10 @@ const CardExchange = ({
           onChange={setFrom}
           value={from}
         />
-        <Button onClick={handleChangeFromTo} />
+        <IconButton
+          onClick={handleChangeFromTo}
+          icon={<MdCurrencyExchange color="#034EEF" size={18} />}
+        />
         <Select
           label="To"
           options={currenciesOptions}
