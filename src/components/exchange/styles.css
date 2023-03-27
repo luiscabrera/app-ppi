@@ -1,0 +1,20 @@
+.background-container {
+  height: calc(100vh - 66px);
+  background: linear-gradient(180deg, #1a8dff 30%, #ffffff 30%);
+}
+
+.exchange-title {
+  display: flex;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+}
+
+.container-spinner {
+  height: calc(100vh - 66px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
