@@ -1,0 +1,23 @@
+.footer {
+  font-size: 12px;
+  font-weight: 300;
+  display: none;
+  justify-content: flex-start;
+}
+
+.footer-card {
+  font-size: 12px;
+  font-weight: 300;
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media screen and (max-width: 600px) {
+  .footer {
+    display: flex;
+  }
+
+  .footer-card {
+    display: none;
+  }
+}

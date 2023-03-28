@@ -3,12 +3,14 @@ import { getBaseCurrencies, getCurrencies } from "../../api/api-calls";
 import Container from "../container";
 import CardExchange from "../card-exchange";
 import Spinner from "../spinner";
+import Footer from "../footer";
 import "./styles.css";
 
 const Exchange = () => {
   const [loading, setLoading] = useState(true);
   const [currencies, setCurrencies] = useState({});
   const [baseCurrencies, setBaseCurrencies] = useState({});
+  const [lastUpdated, setLastUpdated] = useState("");
   const [value, setValue] = useState(1);
   const [from, setFrom] = useState("USD");
   const [to, setTo] = useState("EUR");
@@ -18,6 +20,7 @@ const Exchange = () => {
     Promise.all([getCurrencies(), getBaseCurrencies()]).then((data) => {
       setCurrencies(data[0]);
       setBaseCurrencies(data[1]);
+      setLastUpdated(data[1].date);
       setLoading(false);
     });
   }, []);
@@ -50,7 +53,9 @@ const Exchange = () => {
             from={from}
             to={to}
             handleChangeFromTo={handleChangeFromTo}
+            lastUpdated={lastUpdated}
           />
+          <Footer from={from} to={to} date={lastUpdated} />
         </Container>
       )}
     </div>

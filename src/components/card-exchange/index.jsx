@@ -3,6 +3,7 @@ import IconButton from "../icon-button";
 import CardInformation from "../card-information";
 import Input from "../input";
 import Select from "../select/select";
+import Footer from "../footer";
 import { MdCurrencyExchange } from "react-icons/md";
 import "./styles.css";
 
@@ -16,6 +17,7 @@ const CardExchange = ({
   setTo,
   from,
   to,
+  lastUpdated,
 }) => {
   const currenciesOptions = Object.keys(currencies).map((temp) => ({
     value: temp,
@@ -51,13 +53,14 @@ const CardExchange = ({
       </div>
       <div className="container-values-info">
         <div className="container-values">
-          <p className="values">{`${value} ${from} = ${valuesBaseCurrencyTo} ${to}`}</p>
+          <p className="values">{`${value} ${currencies[from].name} = ${valuesBaseCurrencyTo} ${currencies[to].name}`}</p>
           <p className="base-values">{`${baseUsdValue} ${from} = ${baseCurrency} ${to}`}</p>
         </div>
         <div className="container-card">
           <CardInformation label="We use the mid-market rate for our Converter. This is for informational purposes only. You won't receive this rate when sending money." />
         </div>
       </div>
+      <Footer from={from} to={to} date={lastUpdated} insideCard />
     </div>
   );
 };
