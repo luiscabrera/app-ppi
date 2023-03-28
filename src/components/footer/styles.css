@@ -12,6 +12,10 @@
   justify-content: flex-end;
 }
 
+.underlined {
+  text-decoration: underline;
+}
+
 @media screen and (max-width: 600px) {
   .footer {
     display: flex;
