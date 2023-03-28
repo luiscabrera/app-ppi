@@ -11,7 +11,7 @@ const Input = ({ label, value, onChange }) => {
 
   return (
     <div className="input">
-      <p>{label}</p>
+      <p className="label">{label}</p>
       <input type="number" value={value} onChange={handleChange} />
       {value < 0 && (
         <div className="validation">
