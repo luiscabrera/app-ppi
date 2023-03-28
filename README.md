@@ -1,25 +1,46 @@
-# Getting Started with Create React App
+# Getting Started
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Prerequisites
 
-## Available Scripts
+To use this app, you need to have the following software installed on your machine:
 
-In the project directory, you can run:
+- Node.js (version 18.15.0 or higher)
 
-### `npm start`
+- npm (version 9.5.0 or higher)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Installation
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+To install the app, clone this repository and run the following commands:
 
-### `npm run build`
+```
+cd app-ppi
+npm install
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Running the App
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+To start the app in development mode, run the following command:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+npm start
+```
+
+This will start the app and open it in your default browser. Any changes you make to the code will be automatically reloaded in the browser.
+
+## Building the App
+
+To build the app for production, run the following command:
+
+```
+npm run build
+```
+
+This will create a build folder with the compiled and optimized files for production.
+
+## Contributing
+
+If you have any suggestions or find any issues, please feel free to submit a pull request or open an issue.
+
+## License
+
+This app is licensed under the MIT License.
