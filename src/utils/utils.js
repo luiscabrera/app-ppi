@@ -25,9 +25,9 @@ export const formatDateUTC = (date) => {
   // Get the year
   const year = dateUTC.getFullYear();
 
-  // Get the hours and minutes in UTC
-  const hours = dateUTC.getUTCHours();
-  const minutes = dateUTC.getUTCMinutes();
+  // Get the hours and minutes
+  const hours = ("0" + dateUTC.getHours()).slice(-2);
+  const minutes = ("0" + dateUTC.getMinutes()).slice(-2);
 
   // Format the date string
   const formattedDate = `${monthName} ${day}, ${year}, ${hours}:${minutes} UTC`;
