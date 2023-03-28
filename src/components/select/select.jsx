@@ -1,4 +1,5 @@
 import React from "react";
+import "./styles.css";
 
 const Select = ({ label, options, onChange, defaultValue, value }) => {
   const handleCurrencyChange = (e) => {
@@ -9,6 +10,7 @@ const Select = ({ label, options, onChange, defaultValue, value }) => {
     <div className="select">
       <p className="label">{label}</p>
       <select
+        className="custom-select"
         value={value}
         onChange={handleCurrencyChange}
         defaultValue={defaultValue}

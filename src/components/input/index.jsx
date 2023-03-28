@@ -12,7 +12,12 @@ const Input = ({ label, value, onChange }) => {
   return (
     <div className="input">
       <p className="label">{label}</p>
-      <input type="number" value={value} onChange={handleChange} />
+      <input
+        className="custom-input"
+        type="number"
+        value={value}
+        onChange={handleChange}
+      />
       {value < 0 && (
         <div className="validation">
           <p>Amount cannot be negative</p>
