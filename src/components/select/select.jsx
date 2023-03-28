@@ -7,7 +7,7 @@ const Select = ({ label, options, onChange, defaultValue, value }) => {
 
   return (
     <div className="select">
-      <p>{label}</p>
+      <p className="label">{label}</p>
       <select
         value={value}
         onChange={handleCurrencyChange}
