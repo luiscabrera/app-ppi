@@ -182,6 +182,16 @@ describe("App", () => {
     expect(fetchMock).toHaveBeenCalled();
   });
 
+  it("por defecto usa español de Argentina (es-AR)", async () => {
+    mockApi();
+    renderApp();
+    expect(await screen.findByText("1 USD = 7.100 PYG")).toBeInTheDocument();
+    expect(document.documentElement.lang).toBe("es-AR");
+    expect(
+      screen.getByText(/Cotización actualizada el \d+ de octubre de 2026/),
+    ).toBeInTheDocument();
+  });
+
   it("cambia a inglés con el botón de la bandera y adapta los números", async () => {
     mockApi();
     const user = userEvent.setup();
@@ -199,7 +209,7 @@ describe("App", () => {
     expect(screen.getByRole("list")).toHaveTextContent(
       "Argentine Peso2,100,700.00 ARS",
     );
-    expect(document.documentElement.lang).toBe("en");
+    expect(document.documentElement.lang).toBe("en-US");
     expect(document.title).toBe("Currency converter");
     expect(JSON.parse(window.localStorage.getItem("app-ppi:lang"))).toBe("en");
 

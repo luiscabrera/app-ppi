@@ -1,7 +1,7 @@
 import { CURRENCY_BY_CODE } from "../config/currencies";
 
-// Locale por defecto: formato de Paraguay (punto para miles, coma para decimales).
-export const DEFAULT_LOCALE = "es-PY";
+// Locale por defecto: español de Argentina (punto para miles, coma para decimales).
+export const DEFAULT_LOCALE = "es-AR";
 
 const cache = new Map();
 

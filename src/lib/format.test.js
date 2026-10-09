@@ -34,7 +34,7 @@ describe("parseAmount", () => {
 });
 
 describe("formatMoney", () => {
-  it("usa separadores de Paraguay", () => {
+  it("usa separadores de Argentina", () => {
     expect(formatMoney(1234567.891, "USD")).toBe("1.234.567,89");
   });
 

@@ -98,7 +98,7 @@ sumarlo en `LANGUAGES` y traducir su bloque de textos en el mismo archivo.
 | 3   | Validación de la respuesta de la API                                          | Si faltaba una tasa, la app se rompía.                                              |
 | 4   | Estados de carga, error con reintento y caché sin conexión                    | No había manejo de errores.                                                         |
 | 5   | Fecha de actualización correcta                                               | La original decía "UTC" pero mostraba la hora local, y corría la fecha un día.      |
-| 6   | Formato y lectura de montos de Paraguay con `Intl.NumberFormat`               | Se usaba `toFixed(6)`, sin separadores de miles.                                    |
+| 6   | Formato y lectura de montos según el idioma con `Intl.NumberFormat`           | Se usaba `toFixed(6)`, sin separadores de miles.                                    |
 | 7   | Migración de Create React App (deprecado) a Vite                              | Build más rápido y con mantenimiento activo.                                        |
 | 8   | CSS Modules y variables de diseño, modo oscuro                                | Las clases globales (`.label`, `.container`) chocaban entre sí.                     |
 | 9   | Lógica separada en hooks y funciones puras                                    | Antes los cálculos estaban mezclados con la vista y había prop drilling.            |

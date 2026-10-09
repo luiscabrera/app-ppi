@@ -31,9 +31,9 @@ export default function I18nProvider({ children }) {
   const language = LANGUAGES.find((l) => l.code === lang);
 
   useEffect(() => {
-    document.documentElement.lang = lang;
+    document.documentElement.lang = language.locale;
     document.title = MESSAGES[lang].pageTitle;
-  }, [lang]);
+  }, [lang, language]);
 
   const value = useMemo(() => {
     const messages = MESSAGES[lang];
