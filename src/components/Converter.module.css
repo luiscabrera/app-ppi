@@ -1,0 +1,148 @@
+.card {
+  padding: 28px;
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.form {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.3fr) auto minmax(0, 1.3fr);
+  align-items: start;
+  gap: 16px;
+}
+
+/* El botón se alinea con los selects, debajo de la altura del label. */
+.swap {
+  padding-top: 27px;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 32px;
+  margin-top: 32px;
+}
+
+.result {
+  min-width: 0;
+}
+
+.resultFrom {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.resultTo {
+  margin: 4px 0 12px;
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 700;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.resultCode {
+  font-size: 0.55em;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.rates {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.rates span + span::before {
+  content: " · ";
+}
+
+.side {
+  padding: 20px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+}
+
+.sideTitle {
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.listItem {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  font-size: 0.95rem;
+}
+
+.listItem + .listItem {
+  border-top: 1px solid var(--border);
+}
+
+.listItem strong {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.disclaimer {
+  margin: 24px 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .card {
+    padding: 20px 16px;
+  }
+
+  .form {
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  .amount {
+    grid-column: 1 / -1;
+  }
+
+  .body {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form {
+    grid-template-columns: 1fr;
+  }
+
+  .swap {
+    padding-top: 0;
+    justify-self: center;
+  }
+
+  .rates span {
+    display: block;
+  }
+
+  .rates span + span::before {
+    content: none;
+  }
+}

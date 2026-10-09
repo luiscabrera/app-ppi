@@ -1,0 +1,48 @@
+.container {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.header {
+  padding: 18px 0;
+  background: var(--brand-dark);
+}
+
+.brand {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.main {
+  min-height: calc(100dvh - 66px);
+  padding: 32px 0 48px;
+  background: linear-gradient(
+    180deg,
+    var(--hero) 0,
+    var(--hero) 260px,
+    var(--bg) 260px
+  );
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 700;
+  text-align: center;
+  color: #fff;
+}
+
+.subtitle {
+  margin: 8px 0 28px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.panel {
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
