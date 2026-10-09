@@ -99,6 +99,7 @@ de datos la publique.
 | 11  | Fuente Inter en WOFF2 (`@fontsource`)                                         | Antes se cargaban 9 archivos TTF y el texto normal salía en "Thin".                 |
 | 12  | Tests (45), ESLint, Prettier y CI en GitHub Actions                           | No había tests.                                                                     |
 | 13  | Limpieza de código y dependencias sin uso                                     |                                                                                     |
+| 14  | Publicación automática en GitHub Pages                                        | Tener la app online con cada cambio.                                                |
 
 ### Ideas a futuro
 
