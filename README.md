@@ -1,7 +1,11 @@
 # Conversor de monedas
 
 Conversor entre **dólares (USD), euros (EUR), reales (BRL) y guaraníes (PYG)** con la
-cotización del día. Es una SPA en React, sin backend: el navegador consulta directamente una
+cotización del día.
+
+**Online:** https://luiscabrera.github.io/app-ppi/
+
+Es una SPA en React, sin backend: el navegador consulta directamente una
 API pública de cotizaciones.
 
 ## Funcionalidades
@@ -45,6 +49,15 @@ npm run preview    # sirve el build localmente
 
 `dist/` usa rutas relativas, así que se puede publicar en cualquier hosting estático (GitHub
 Pages, Netlify, Vercel, una subcarpeta de un servidor, etc.).
+
+## Publicación (GitHub Pages)
+
+Cada push a `master` dispara el workflow `.github/workflows/pages.yml`, que corre lint, tests y
+build y, si todo pasa, publica `dist/` en GitHub Pages. También se puede lanzar a mano desde la
+pestaña **Actions → Publicar en GitHub Pages → Run workflow**.
+
+Configuración inicial (una sola vez): **Settings → Pages → Build and deployment → Source:
+GitHub Actions**.
 
 ## Estructura
 
@@ -93,7 +106,6 @@ de datos la publique.
   porque no hay una API pública confiable).
 - Gráfico histórico de cada par.
 - PWA instalable con funcionamiento offline completo.
-- Publicación automática en GitHub Pages desde CI.
 
 ## Licencia
 
