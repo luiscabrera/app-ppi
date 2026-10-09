@@ -1,7 +1,7 @@
 // Textos de la interfaz. Los `{nombre}` se reemplazan al traducir.
 // Para sumar un idioma: agregar una entrada en LANGUAGES y su bloque de textos acá.
 export const LANGUAGES = [
-  { code: "es", locale: "es-PY", name: "Español (Latinoamérica)", flag: "ar" },
+  { code: "es", locale: "es-AR", name: "Español (Latinoamérica)", flag: "ar" },
   { code: "en", locale: "en-US", name: "English", flag: "us" },
 ];
 
