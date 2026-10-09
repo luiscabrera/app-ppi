@@ -1,46 +1,100 @@
-# Getting Started
+# Conversor de monedas
 
-## Prerequisites
+Conversor entre **dólares (USD), euros (EUR), reales (BRL) y guaraníes (PYG)** con la
+cotización del día. Es una SPA en React, sin backend: el navegador consulta directamente una
+API pública de cotizaciones.
 
-To use this app, you need to have the following software installed on your machine:
+## Funcionalidades
 
-- Node.js (version 18.15.0 or higher)
+- Conversión entre cualquier par de las 4 monedas, cruzando por USD con una sola consulta.
+- Equivalente del monto en las otras tres monedas, a la vista.
+- Formato de Paraguay (`1.500.000,50`); el guaraní se muestra sin decimales.
+- El campo de monto acepta `1.500.000`, `1500000`, `10,50` o `10.50`.
+- Botón para invertir las monedas. Elegir la misma moneda en ambos lados también las invierte.
+- Recuerda el monto y las monedas elegidas.
+- Las cotizaciones se guardan una hora en el navegador. Sin conexión, se siguen mostrando
+  las últimas guardadas, con un aviso.
+- Fuente de respaldo automática si la principal falla, con reintento.
+- Accesible (labels, `aria-*`, foco visible), responsive y con modo oscuro.
 
-- npm (version 9.5.0 or higher)
+## Fuentes de datos
 
-## Installation
+Las tasas del Banco Central Europeo (que usaba la versión original vía vatcomply) **no incluyen
+el guaraní**, así que se usan estas fuentes, gratuitas y sin API key:
 
-To install the app, clone this repository and run the following commands:
+1. [ExchangeRate-API](https://www.exchangerate-api.com) (`open.er-api.com`): actualiza una vez
+   por día.
+2. [Currency API](https://github.com/fawazahmed0/exchange-api) (jsDelivr y su espejo en
+   Cloudflare): se usa como respaldo.
 
-```
-cd app-ppi
+Son cotizaciones de referencia (tipo medio del mercado): sirven como guía, pero no son el valor
+de compra o venta de un banco o una casa de cambios.
+
+## Uso
+
+Requisitos: Node.js 20 o superior.
+
+```bash
 npm install
+npm run dev        # desarrollo en http://localhost:5173
+npm test           # tests (Vitest + Testing Library)
+npm run lint       # ESLint
+npm run build      # build de producción en dist/
+npm run preview    # sirve el build localmente
 ```
 
-## Running the App
+`dist/` usa rutas relativas, así que se puede publicar en cualquier hosting estático (GitHub
+Pages, Netlify, Vercel, una subcarpeta de un servidor, etc.).
 
-To start the app in development mode, run the following command:
-
-```
-npm start
-```
-
-This will start the app and open it in your default browser. Any changes you make to the code will be automatically reloaded in the browser.
-
-## Building the App
-
-To build the app for production, run the following command:
+## Estructura
 
 ```
-npm run build
+src/
+├── config/currencies.js     monedas soportadas (código, nombre, bandera, decimales)
+├── api/rates.js             fuentes de cotizaciones, validación y respaldo
+├── hooks/
+│   ├── useExchangeRates.js  carga, caché, errores y actualización
+│   └── usePersistentState.js
+├── lib/
+│   ├── convert.js           conversión por cruce contra USD
+│   ├── format.js            formateo y lectura de montos y fechas (es-PY)
+│   └── storage.js           localStorage tolerante a fallos
+├── components/              UI con CSS Modules
+├── App.jsx
+└── main.jsx
 ```
 
-This will create a build folder with the compiled and optimized files for production.
+Para agregar una moneda alcanza con sumarla en `src/config/currencies.js`, siempre que la fuente
+de datos la publique.
 
-## Contributing
+## Plan de mejoras
 
-If you have any suggestions or find any issues, please feel free to submit a pull request or open an issue.
+### Hecho
 
-## License
+| #   | Mejora                                                                        | Motivo                                                                              |
+| --- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| 1   | Cambio de fuente de datos y fuente de respaldo                                | El BCE no publica PYG; antes, si la API caía, la app quedaba cargando para siempre. |
+| 2   | Monedas acotadas a USD, EUR, BRL y PYG, con nombres en español                | Alcance del proyecto.                                                               |
+| 3   | Validación de la respuesta de la API                                          | Si faltaba una tasa, la app se rompía.                                              |
+| 4   | Estados de carga, error con reintento y caché sin conexión                    | No había manejo de errores.                                                         |
+| 5   | Fecha de actualización correcta                                               | La original decía "UTC" pero mostraba la hora local, y corría la fecha un día.      |
+| 6   | Formato y lectura de montos de Paraguay con `Intl.NumberFormat`               | Se usaba `toFixed(6)`, sin separadores de miles.                                    |
+| 7   | Migración de Create React App (deprecado) a Vite                              | Build más rápido y con mantenimiento activo.                                        |
+| 8   | CSS Modules y variables de diseño, modo oscuro                                | Las clases globales (`.label`, `.container`) chocaban entre sí.                     |
+| 9   | Lógica separada en hooks y funciones puras                                    | Antes los cálculos estaban mezclados con la vista y había prop drilling.            |
+| 10  | Accesibilidad: `<label>`, `aria-label`, `aria-live`, `prefers-reduced-motion` | Antes los lectores de pantalla no podían usarla.                                    |
+| 11  | Fuente Inter en WOFF2 (`@fontsource`)                                         | Antes se cargaban 9 archivos TTF y el texto normal salía en "Thin".                 |
+| 12  | Tests (45), ESLint, Prettier y CI en GitHub Actions                           | No había tests.                                                                     |
+| 13  | Limpieza de código y dependencias sin uso                                     |                                                                                     |
 
-This app is licensed under the MIT License.
+### Ideas a futuro
+
+- Cotización de compra y venta de casas de cambio locales (requiere una fuente o backend propio,
+  porque no hay una API pública confiable).
+- Gráfico histórico de cada par.
+- PWA instalable con funcionamiento offline completo.
+- Publicación automática en GitHub Pages desde CI.
+
+## Licencia
+
+MIT

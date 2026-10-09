@@ -1,0 +1,31 @@
+.wrapper {
+  padding: 48px 16px;
+  text-align: center;
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+}
+
+.text {
+  margin: 0 0 24px;
+  color: var(--text-muted);
+}
+
+.button {
+  height: 44px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
