@@ -138,6 +138,8 @@ export default function Converter({ data, loading, error, onRefresh }) {
         Usamos la cotización de referencia del mercado (tipo medio). Es sólo
         informativa: bancos y casas de cambio aplican su propia cotización de
         compra y venta.
+        {(from === "ARS" || to === "ARS") &&
+          " Para el peso argentino se usa el tipo de cambio oficial, no el dólar blue ni otras cotizaciones paralelas."}
       </p>
 
       <RatesStatus

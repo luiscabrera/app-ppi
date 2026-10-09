@@ -1,6 +1,6 @@
 # Conversor de monedas
 
-Conversor entre **dólares (USD), euros (EUR), reales (BRL) y guaraníes (PYG)** con la
+Conversor entre **dólares (USD), euros (EUR), reales (BRL), pesos argentinos (ARS) y guaraníes (PYG)** con la
 cotización del día.
 
 **Online:** https://luiscabrera.github.io/app-ppi/
@@ -10,8 +10,8 @@ API pública de cotizaciones.
 
 ## Funcionalidades
 
-- Conversión entre cualquier par de las 4 monedas, cruzando por USD con una sola consulta.
-- Equivalente del monto en las otras tres monedas, a la vista.
+- Conversión entre cualquier par de las 5 monedas, cruzando por USD con una sola consulta.
+- Equivalente del monto en las otras cuatro monedas, a la vista.
 - Formato de Paraguay (`1.500.000,50`); el guaraní se muestra sin decimales.
 - El campo de monto acepta `1.500.000`, `1500000`, `10,50` o `10.50`.
 - Botón para invertir las monedas. Elegir la misma moneda en ambos lados también las invierte.
@@ -24,7 +24,7 @@ API pública de cotizaciones.
 ## Fuentes de datos
 
 Las tasas del Banco Central Europeo (que usaba la versión original vía vatcomply) **no incluyen
-el guaraní**, así que se usan estas fuentes, gratuitas y sin API key:
+el guaraní ni el peso argentino**, así que se usan estas fuentes, gratuitas y sin API key:
 
 1. [ExchangeRate-API](https://www.exchangerate-api.com) (`open.er-api.com`): actualiza una vez
    por día.
@@ -32,7 +32,8 @@ el guaraní**, así que se usan estas fuentes, gratuitas y sin API key:
    Cloudflare): se usa como respaldo.
 
 Son cotizaciones de referencia (tipo medio del mercado): sirven como guía, pero no son el valor
-de compra o venta de un banco o una casa de cambios.
+de compra o venta de un banco o una casa de cambios. Para el peso argentino es el tipo de cambio
+oficial: no refleja el dólar blue, MEP ni otras cotizaciones paralelas.
 
 ## Uso
 
@@ -87,7 +88,7 @@ de datos la publique.
 | #   | Mejora                                                                        | Motivo                                                                              |
 | --- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | 1   | Cambio de fuente de datos y fuente de respaldo                                | El BCE no publica PYG; antes, si la API caía, la app quedaba cargando para siempre. |
-| 2   | Monedas acotadas a USD, EUR, BRL y PYG, con nombres en español                | Alcance del proyecto.                                                               |
+| 2   | Monedas acotadas a USD, EUR, BRL, ARS y PYG, con nombres en español           | Alcance del proyecto.                                                               |
 | 3   | Validación de la respuesta de la API                                          | Si faltaba una tasa, la app se rompía.                                              |
 | 4   | Estados de carga, error con reintento y caché sin conexión                    | No había manejo de errores.                                                         |
 | 5   | Fecha de actualización correcta                                               | La original decía "UTC" pero mostraba la hora local, y corría la fecha un día.      |

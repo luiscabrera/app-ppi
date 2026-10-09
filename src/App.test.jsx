@@ -73,6 +73,7 @@ describe("App", () => {
     const list = await screen.findByRole("list");
     expect(list).toHaveTextContent("Euro0,86 EUR");
     expect(list).toHaveTextContent("Real brasileño5,40 BRL");
+    expect(list).toHaveTextContent("Peso argentino1.400,00 ARS");
     expect(list).toHaveTextContent("Guaraní paraguayo7.100 PYG");
   });
 
@@ -98,7 +99,7 @@ describe("App", () => {
       JSON.stringify({
         fetchedAt: Date.now(),
         data: {
-          rates: { USD: 1, EUR: 0.9, BRL: 5, PYG: 7000 },
+          rates: { USD: 1, EUR: 0.9, BRL: 5, ARS: 1350, PYG: 7000 },
           updatedAt: "2026-10-09T00:00:00Z",
           precision: "date",
           source: { name: "Cache", homepage: "https://example.com" },
@@ -117,7 +118,7 @@ describe("App", () => {
       JSON.stringify({
         fetchedAt: Date.now() - 24 * 60 * 60 * 1000,
         data: {
-          rates: { USD: 1, EUR: 0.9, BRL: 5, PYG: 7000 },
+          rates: { USD: 1, EUR: 0.9, BRL: 5, ARS: 1350, PYG: 7000 },
           updatedAt: "2026-10-08T00:00:00Z",
           precision: "date",
           source: { name: "Cache", homepage: "https://example.com" },
@@ -139,5 +140,37 @@ describe("App", () => {
     unmount();
     render(<App />);
     expect(await screen.findByLabelText("A")).toHaveValue("BRL");
+  });
+
+  it("convierte entre peso argentino y guaraní", async () => {
+    mockApi();
+    const user = userEvent.setup();
+    render(<App />);
+    await user.selectOptions(await screen.findByLabelText("De"), "ARS");
+    const input = screen.getByLabelText("Monto");
+    await user.clear(input);
+    await user.type(input, "100.000");
+    // 100.000 ARS / 1.400 * 7.100 = 507.142,86 PYG
+    expect(result()).toHaveTextContent("507.143 PYG");
+    expect(screen.getByText(/tipo de cambio oficial/)).toBeInTheDocument();
+  });
+
+  it("descarta una caché vieja que no tiene el peso argentino", async () => {
+    const fetchMock = mockApi();
+    window.localStorage.setItem(
+      CACHE_KEY,
+      JSON.stringify({
+        fetchedAt: Date.now(),
+        data: {
+          rates: { USD: 1, EUR: 0.9, BRL: 5, PYG: 7000 },
+          updatedAt: "2026-10-09T00:00:00Z",
+          precision: "date",
+          source: { name: "Cache", homepage: "https://example.com" },
+        },
+      }),
+    );
+    render(<App />);
+    expect(await screen.findByText("1 USD = 7.100 PYG")).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalled();
   });
 });

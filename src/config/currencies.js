@@ -16,6 +16,13 @@ export const CURRENCIES = [
     decimals: 2,
   },
   {
+    code: "ARS",
+    name: "Peso argentino",
+    plural: "pesos argentinos",
+    flag: "🇦🇷",
+    decimals: 2,
+  },
+  {
     code: "PYG",
     name: "Guaraní paraguayo",
     plural: "guaraníes",

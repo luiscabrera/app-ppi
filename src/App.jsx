@@ -40,7 +40,9 @@ export default function App() {
       </header>
       <main className={styles.main}>
         <div className={styles.container}>
-          <h1 className={styles.title}>Dólares, euros, reales y guaraníes</h1>
+          <h1 className={styles.title}>
+            Dólares, euros, reales, pesos y guaraníes
+          </h1>
           <p className={styles.subtitle}>
             Convertí al instante con la cotización del día.
           </p>

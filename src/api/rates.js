@@ -1,6 +1,6 @@
 import { CURRENCY_CODES } from "../config/currencies";
 
-// Las tasas del BCE (vatcomply, frankfurter) no incluyen el guaraní, por eso se
+// Las tasas del BCE (vatcomply, frankfurter) no incluyen el guaraní ni el peso argentino, por eso se
 // usan fuentes que sí lo publican. Ambas son gratuitas, sin API key y con CORS.
 export const PROVIDERS = [
   {
