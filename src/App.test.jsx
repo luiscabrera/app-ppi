@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "./App";
+import I18nProvider from "./i18n/I18nProvider";
 import { CACHE_KEY } from "./hooks/useExchangeRates";
 import { erApiResponse, jsonResponse } from "./test/fixtures";
 
@@ -10,12 +11,19 @@ const mockApi = () =>
     .spyOn(globalThis, "fetch")
     .mockImplementation(() => jsonResponse(erApiResponse));
 
+const renderApp = () =>
+  render(
+    <I18nProvider>
+      <App />
+    </I18nProvider>,
+  );
+
 const result = () => screen.getByTestId("result");
 
 describe("App", () => {
   it("muestra la conversión por defecto de USD a PYG", async () => {
     mockApi();
-    render(<App />);
+    renderApp();
     expect(screen.getByRole("status")).toHaveTextContent(
       "Cargando cotizaciones",
     );
@@ -26,7 +34,7 @@ describe("App", () => {
   it("convierte al escribir un monto con separadores", async () => {
     mockApi();
     const user = userEvent.setup();
-    render(<App />);
+    renderApp();
     const input = await screen.findByLabelText("Monto");
     await user.clear(input);
     await user.type(input, "1.000,50");
@@ -36,7 +44,7 @@ describe("App", () => {
   it("valida montos inválidos", async () => {
     mockApi();
     const user = userEvent.setup();
-    render(<App />);
+    renderApp();
     const input = await screen.findByLabelText("Monto");
     await user.clear(input);
     await user.type(input, "abc");
@@ -49,7 +57,7 @@ describe("App", () => {
   it("invierte las monedas con el botón", async () => {
     mockApi();
     const user = userEvent.setup();
-    render(<App />);
+    renderApp();
     await user.click(
       await screen.findByRole("button", { name: "Invertir monedas" }),
     );
@@ -61,7 +69,7 @@ describe("App", () => {
   it("elegir la misma moneda en ambos lados las invierte", async () => {
     mockApi();
     const user = userEvent.setup();
-    render(<App />);
+    renderApp();
     await user.selectOptions(await screen.findByLabelText("De"), "PYG");
     expect(screen.getByLabelText("De")).toHaveValue("PYG");
     expect(screen.getByLabelText("A")).toHaveValue("USD");
@@ -69,7 +77,7 @@ describe("App", () => {
 
   it("muestra el equivalente en las otras monedas", async () => {
     mockApi();
-    render(<App />);
+    renderApp();
     const list = await screen.findByRole("list");
     expect(list).toHaveTextContent("Euro0,86 EUR");
     expect(list).toHaveTextContent("Real brasileño5,40 BRL");
@@ -82,7 +90,7 @@ describe("App", () => {
       .spyOn(globalThis, "fetch")
       .mockRejectedValue(new TypeError("offline"));
     const user = userEvent.setup();
-    render(<App />);
+    renderApp();
     expect(
       await screen.findByText("No pudimos obtener las cotizaciones"),
     ).toBeInTheDocument();
@@ -106,7 +114,7 @@ describe("App", () => {
         },
       }),
     );
-    render(<App />);
+    renderApp();
     expect(screen.getByText("1 USD = 7.000 PYG")).toBeInTheDocument();
     expect(fetchMock).not.toHaveBeenCalled();
   });
@@ -125,7 +133,7 @@ describe("App", () => {
         },
       }),
     );
-    render(<App />);
+    renderApp();
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "No se pudo actualizar",
     );
@@ -135,17 +143,17 @@ describe("App", () => {
   it("recuerda las monedas elegidas", async () => {
     mockApi();
     const user = userEvent.setup();
-    const { unmount } = render(<App />);
+    const { unmount } = renderApp();
     await user.selectOptions(await screen.findByLabelText("A"), "BRL");
     unmount();
-    render(<App />);
+    renderApp();
     expect(await screen.findByLabelText("A")).toHaveValue("BRL");
   });
 
   it("convierte entre peso argentino y guaraní", async () => {
     mockApi();
     const user = userEvent.setup();
-    render(<App />);
+    renderApp();
     await user.selectOptions(await screen.findByLabelText("De"), "ARS");
     const input = screen.getByLabelText("Monto");
     await user.clear(input);
@@ -169,8 +177,62 @@ describe("App", () => {
         },
       }),
     );
-    render(<App />);
+    renderApp();
     expect(await screen.findByText("1 USD = 7.100 PYG")).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalled();
+  });
+
+  it("cambia a inglés con el botón de la bandera y adapta los números", async () => {
+    mockApi();
+    const user = userEvent.setup();
+    renderApp();
+    const input = await screen.findByLabelText("Monto");
+    await user.clear(input);
+    await user.type(input, "1.500,5");
+    await user.click(screen.getByRole("button", { name: /Cambiar a English/ }));
+
+    expect(screen.getByLabelText("Amount")).toHaveValue("1,500.5");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      "Dollars, euros",
+    );
+    expect(result()).toHaveTextContent("10,653,550 PYG");
+    expect(screen.getByRole("list")).toHaveTextContent(
+      "Argentine Peso2,100,700.00 ARS",
+    );
+    expect(document.documentElement.lang).toBe("en");
+    expect(document.title).toBe("Currency converter");
+    expect(JSON.parse(window.localStorage.getItem("app-ppi:lang"))).toBe("en");
+
+    await user.click(screen.getByRole("button", { name: /Switch to Español/ }));
+    expect(screen.getByLabelText("Monto")).toHaveValue("1.500,5");
+  });
+
+  it("en inglés interpreta los montos con coma de miles", async () => {
+    window.localStorage.setItem("app-ppi:lang", JSON.stringify("en"));
+    mockApi();
+    const user = userEvent.setup();
+    renderApp();
+    const input = await screen.findByLabelText("Amount");
+    await user.clear(input);
+    await user.type(input, "2,000");
+    expect(result()).toHaveTextContent("14,200,000 PYG");
+  });
+
+  it("el botón de tema alterna entre oscuro y claro y lo recuerda", async () => {
+    mockApi();
+    const user = userEvent.setup();
+    renderApp();
+    await user.click(
+      await screen.findByRole("button", { name: "Activar modo oscuro" }),
+    );
+    expect(document.documentElement.dataset.theme).toBe("dark");
+    expect(JSON.parse(window.localStorage.getItem("app-ppi:theme"))).toBe(
+      "dark",
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: "Activar modo claro" }),
+    );
+    expect(document.documentElement.dataset.theme).toBe("light");
   });
 });

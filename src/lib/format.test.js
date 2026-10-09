@@ -79,6 +79,35 @@ describe("formatUpdatedAt", () => {
   });
 
   it("tolera fechas inválidas", () => {
-    expect(formatUpdatedAt("no-es-fecha")).toBe("fecha desconocida");
+    expect(formatUpdatedAt("no-es-fecha")).toBeNull();
+  });
+});
+
+describe("en inglés (en-US)", () => {
+  it.each([
+    ["1,500,000.50", 1500000.5],
+    ["1,500", 1500],
+    ["10.5", 10.5],
+    ["10,5", 10.5],
+    ["1.500", 1.5],
+  ])("parseAmount(%j) → %j", (input, expected) => {
+    expect(parseAmount(input, "en-US")).toBe(expected);
+  });
+
+  it("formatea con coma de miles y punto decimal", () => {
+    expect(formatMoney(1234567.891, "USD", "en-US")).toBe("1,234,567.89");
+    expect(formatRate(0.18765, "en-US")).toBe("0.1877");
+  });
+
+  it("fecha en inglés", () => {
+    expect(formatUpdatedAt("2026-10-09T00:00:00Z", "date", "en-US")).toBe(
+      "October 9, 2026",
+    );
+  });
+
+  it("formatAmountInput se puede volver a leer", () => {
+    expect(
+      parseAmount(formatAmountInput(1500000.5, "USD", "en-US"), "en-US"),
+    ).toBe(1500000.5);
   });
 });

@@ -12,14 +12,17 @@ API pública de cotizaciones.
 
 - Conversión entre cualquier par de las 5 monedas, cruzando por USD con una sola consulta.
 - Equivalente del monto en las otras cuatro monedas, a la vista.
-- Formato de Paraguay (`1.500.000,50`); el guaraní se muestra sin decimales.
+- El guaraní se muestra sin decimales.
 - El campo de monto acepta `1.500.000`, `1500000`, `10,50` o `10.50`.
 - Botón para invertir las monedas. Elegir la misma moneda en ambos lados también las invierte.
 - Recuerda el monto y las monedas elegidas.
 - Las cotizaciones se guardan una hora en el navegador. Sin conexión, se siguen mostrando
   las últimas guardadas, con un aviso.
 - Fuente de respaldo automática si la principal falla, con reintento.
-- Accesible (labels, `aria-*`, foco visible), responsive y con modo oscuro.
+- En español (Latinoamérica) e inglés, con un botón de bandera en el encabezado. Los números
+  se adaptan al idioma (`1.500,50` / `1,500.50`) y el monto escrito se convierte al cambiar.
+- Botón de modo claro/oscuro. Mientras no se elija, sigue al sistema operativo.
+- Accesible (labels, `aria-*`, foco visible) y responsive.
 
 ## Fuentes de datos
 
@@ -64,22 +67,25 @@ GitHub Actions**.
 
 ```
 src/
-├── config/currencies.js     monedas soportadas (código, nombre, bandera, decimales)
+├── config/currencies.js     monedas soportadas (código, bandera, decimales)
+├── i18n/                    idiomas: textos (messages.js), provider y hook useI18n
 ├── api/rates.js             fuentes de cotizaciones, validación y respaldo
 ├── hooks/
 │   ├── useExchangeRates.js  carga, caché, errores y actualización
+│   ├── useTheme.js          modo claro/oscuro
 │   └── usePersistentState.js
 ├── lib/
 │   ├── convert.js           conversión por cruce contra USD
-│   ├── format.js            formateo y lectura de montos y fechas (es-PY)
+│   ├── format.js            formateo y lectura de montos y fechas según el idioma
 │   └── storage.js           localStorage tolerante a fallos
 ├── components/              UI con CSS Modules
 ├── App.jsx
 └── main.jsx
 ```
 
-Para agregar una moneda alcanza con sumarla en `src/config/currencies.js`, siempre que la fuente
-de datos la publique.
+Para agregar una moneda, sumarla en `src/config/currencies.js` y su nombre en
+`src/i18n/messages.js` (siempre que la fuente de datos la publique). Para agregar un idioma,
+sumarlo en `LANGUAGES` y traducir su bloque de textos en el mismo archivo.
 
 ## Plan de mejoras
 
@@ -101,6 +107,7 @@ de datos la publique.
 | 12  | Tests (45), ESLint, Prettier y CI en GitHub Actions                           | No había tests.                                                                     |
 | 13  | Limpieza de código y dependencias sin uso                                     |                                                                                     |
 | 14  | Publicación automática en GitHub Pages                                        | Tener la app online con cada cambio.                                                |
+| 15  | Peso argentino, idiomas (español e inglés) y botón de modo oscuro             | Pedidos para el proyecto personal.                                                  |
 
 ### Ideas a futuro
 

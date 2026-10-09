@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styles from "./SwapButton.module.css";
 
-export default function SwapButton({ onClick }) {
+export default function SwapButton({ label, onClick }) {
   const [spinning, setSpinning] = useState(false);
   return (
     <button
@@ -12,8 +12,8 @@ export default function SwapButton({ onClick }) {
         onClick();
       }}
       onAnimationEnd={() => setSpinning(false)}
-      aria-label="Invertir monedas"
-      title="Invertir monedas"
+      aria-label={label}
+      title={label}
     >
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
         <path

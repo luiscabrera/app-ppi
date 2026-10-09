@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   CURRENCIES,
   CURRENCY_BY_CODE,
@@ -15,6 +15,7 @@ import {
   parseAmount,
 } from "../lib/format";
 import { usePersistentState } from "../hooks/usePersistentState";
+import { useI18n } from "../i18n/context";
 import AmountInput from "./AmountInput";
 import CurrencySelect from "./CurrencySelect";
 import SwapButton from "./SwapButton";
@@ -24,6 +25,7 @@ import styles from "./Converter.module.css";
 const isCurrency = (code) => CURRENCY_CODES.includes(code);
 
 export default function Converter({ data, loading, error, onRefresh }) {
+  const { t, locale, currencyName, currencyPlural } = useI18n();
   const [amountText, setAmountText] = usePersistentState(
     "app-ppi:amount",
     DEFAULT_AMOUNT,
@@ -37,13 +39,23 @@ export default function Converter({ data, loading, error, onRefresh }) {
   const [to, setTo] = usePersistentState("app-ppi:to", DEFAULT_TO, isCurrency);
   const [touched, setTouched] = useState(false);
 
+  // Al cambiar de idioma cambian los separadores ("1.500,5" ↔ "1,500.5"):
+  // se reescribe el monto con el formato nuevo para que siga valiendo lo mismo.
+  const previousLocale = useRef(locale);
+  useEffect(() => {
+    if (previousLocale.current === locale) return;
+    const value = parseAmount(amountText, previousLocale.current);
+    previousLocale.current = locale;
+    if (value !== null && !Number.isNaN(value)) {
+      setAmountText(formatAmountInput(value, from, locale));
+    }
+  }, [locale, amountText, from, setAmountText]);
+
   const { rates } = data;
-  const amount = parseAmount(amountText);
-  const invalid = Number.isNaN(amount);
-  const result =
-    amount === null || invalid ? NaN : convert(amount, from, to, rates);
-  const fromInfo = CURRENCY_BY_CODE[from];
-  const toInfo = CURRENCY_BY_CODE[to];
+  const amount = parseAmount(amountText, locale);
+  const hasAmount = amount !== null && !Number.isNaN(amount);
+  const result = hasAmount ? convert(amount, from, to, rates) : NaN;
+  const money = (value, code) => formatMoney(value, code, locale);
 
   const swap = () => {
     setFrom(to);
@@ -56,74 +68,71 @@ export default function Converter({ data, loading, error, onRefresh }) {
 
   const handleBlur = () => {
     setTouched(true);
-    if (amount !== null && !invalid)
-      setAmountText(formatAmountInput(amount, from));
+    if (hasAmount) setAmountText(formatAmountInput(amount, from, locale));
   };
 
   let amountError = null;
-  if (invalid)
-    amountError = "Ingresá un monto válido, por ejemplo 1.500.000 o 10,50";
-  else if (touched && amount === null) amountError = "Ingresá un monto";
+  if (Number.isNaN(amount)) amountError = t("invalidAmount");
+  else if (touched && amount === null) amountError = t("emptyAmount");
 
   return (
     <section className={styles.card} aria-labelledby="converter-title">
       <h2 id="converter-title" className={styles.visuallyHidden}>
-        Convertir {fromInfo.plural} a {toInfo.plural}
+        {t("converterHeading", {
+          from: currencyPlural(from),
+          to: currencyPlural(to),
+        })}
       </h2>
 
       <div className={styles.form}>
         <div className={styles.amount}>
           <AmountInput
+            label={t("amount")}
             value={amountText}
             onChange={setAmountText}
             onBlur={handleBlur}
             error={amountError}
           />
         </div>
-        <CurrencySelect label="De" value={from} onChange={changeFrom} />
+        <CurrencySelect label={t("from")} value={from} onChange={changeFrom} />
         <div className={styles.swap}>
-          <SwapButton onClick={swap} />
+          <SwapButton label={t("swap")} onClick={swap} />
         </div>
-        <CurrencySelect label="A" value={to} onChange={changeTo} />
+        <CurrencySelect label={t("to")} value={to} onChange={changeTo} />
       </div>
 
       <div className={styles.body}>
         <div className={styles.result} aria-live="polite">
           <p className={styles.resultFrom}>
-            {amount === null || invalid
-              ? `${fromInfo.flag} ${fromInfo.name} =`
-              : `${formatMoney(amount, from)} ${from} =`}
+            {hasAmount
+              ? `${money(amount, from)} ${from} =`
+              : `${CURRENCY_BY_CODE[from].flag} ${currencyName(from)} =`}
           </p>
           <p className={styles.resultTo} data-testid="result">
-            {formatMoney(result, to)}{" "}
-            <span className={styles.resultCode}>{to}</span>
+            {money(result, to)} <span className={styles.resultCode}>{to}</span>
           </p>
           <p className={styles.rates}>
-            <span>{`1 ${from} = ${formatRate(rateBetween(from, to, rates))} ${to}`}</span>
-            <span>{`1 ${to} = ${formatRate(rateBetween(to, from, rates))} ${from}`}</span>
+            <span>{`1 ${from} = ${formatRate(rateBetween(from, to, rates), locale)} ${to}`}</span>
+            <span>{`1 ${to} = ${formatRate(rateBetween(to, from, rates), locale)} ${from}`}</span>
           </p>
         </div>
 
         <div className={styles.side}>
           <h3 className={styles.sideTitle}>
-            {amount === null || invalid
-              ? `1 ${from} equivale a`
-              : `${formatMoney(amount, from)} ${from} equivalen a`}
+            {hasAmount
+              ? t("equivalentMany", { amount: money(amount, from), code: from })
+              : t("equivalentOne", { code: from })}
           </h3>
           <ul className={styles.list}>
             {CURRENCIES.filter((c) => c.code !== from).map((c) => (
               <li key={c.code} className={styles.listItem}>
                 <span>
-                  <span aria-hidden="true">{c.flag}</span> {c.name}
+                  <span aria-hidden="true">{c.flag}</span>{" "}
+                  {currencyName(c.code)}
                 </span>
                 <strong>
-                  {formatMoney(
-                    convert(
-                      amount === null || invalid ? 1 : amount,
-                      from,
-                      c.code,
-                      rates,
-                    ),
+                  {money(
+                    convert(hasAmount ? amount : 1, from, c.code, rates),
                     c.code,
                   )}{" "}
                   {c.code}
@@ -135,11 +144,8 @@ export default function Converter({ data, loading, error, onRefresh }) {
       </div>
 
       <p className={styles.disclaimer}>
-        Usamos la cotización de referencia del mercado (tipo medio). Es sólo
-        informativa: bancos y casas de cambio aplican su propia cotización de
-        compra y venta.
-        {(from === "ARS" || to === "ARS") &&
-          " Para el peso argentino se usa el tipo de cambio oficial, no el dólar blue ni otras cotizaciones paralelas."}
+        {t("disclaimer")}
+        {(from === "ARS" || to === "ARS") && ` ${t("arsNote")}`}
       </p>
 
       <RatesStatus

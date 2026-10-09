@@ -1,13 +1,13 @@
 import { useId } from "react";
 import styles from "./Field.module.css";
 
-export default function AmountInput({ value, onChange, onBlur, error }) {
+export default function AmountInput({ label, value, onChange, onBlur, error }) {
   const id = useId();
   const errorId = `${id}-error`;
   return (
     <div className={styles.field}>
       <label className={styles.label} htmlFor={id}>
-        Monto
+        {label}
       </label>
       <input
         id={id}

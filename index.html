@@ -10,6 +10,14 @@
     />
     <meta name="theme-color" content="#0e1342" />
     <title>Conversor de monedas</title>
+    <script>
+      // Aplica el tema guardado antes de pintar la página (evita un parpadeo).
+      try {
+        var theme = JSON.parse(localStorage.getItem("app-ppi:theme"));
+        if (theme === "light" || theme === "dark")
+          document.documentElement.dataset.theme = theme;
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>
