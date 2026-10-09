@@ -1,17 +1,20 @@
 import { formatUpdatedAt } from "../lib/format";
+import { useI18n } from "../i18n/context";
 import styles from "./RatesStatus.module.css";
 
 export default function RatesStatus({ data, loading, error, onRefresh }) {
+  const { t, locale } = useI18n();
+  const date =
+    formatUpdatedAt(data.updatedAt, data.precision, locale) ?? t("unknownDate");
   return (
     <footer className={styles.status}>
       {error && (
         <p className={styles.warning} role="alert">
-          No se pudo actualizar: se muestran las últimas cotizaciones guardadas.
+          {t("staleWarning")}
         </p>
       )}
       <p className={styles.meta}>
-        Cotización actualizada el{" "}
-        {formatUpdatedAt(data.updatedAt, data.precision)} · Fuente:{" "}
+        {t("updatedAt", { date })} · {t("source")}:{" "}
         <a href={data.source.homepage} target="_blank" rel="noreferrer">
           {data.source.name}
         </a>
@@ -22,7 +25,7 @@ export default function RatesStatus({ data, loading, error, onRefresh }) {
         onClick={onRefresh}
         disabled={loading}
       >
-        {loading ? "Actualizando…" : "Actualizar"}
+        {loading ? t("refreshing") : t("refresh")}
       </button>
     </footer>
   );

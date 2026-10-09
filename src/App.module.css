@@ -5,8 +5,15 @@
 }
 
 .header {
-  padding: 18px 0;
+  padding: 12px 0;
   background: var(--brand-dark);
+}
+
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 }
 
 .brand {
@@ -17,7 +24,7 @@
 }
 
 .main {
-  min-height: calc(100dvh - 66px);
+  min-height: calc(100dvh - 64px);
   padding: 32px 0 48px;
   background: linear-gradient(
     180deg,
@@ -45,4 +52,10 @@
   border-radius: 16px;
   background: var(--surface);
   box-shadow: var(--shadow);
+}
+
+@media (max-width: 480px) {
+  .brand {
+    font-size: 1.05rem;
+  }
 }

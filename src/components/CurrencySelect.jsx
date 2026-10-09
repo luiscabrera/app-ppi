@@ -1,9 +1,11 @@
 import { useId } from "react";
 import { CURRENCIES } from "../config/currencies";
+import { useI18n } from "../i18n/context";
 import styles from "./Field.module.css";
 
 export default function CurrencySelect({ label, value, onChange }) {
   const id = useId();
+  const { currencyName } = useI18n();
   return (
     <div className={styles.field}>
       <label className={styles.label} htmlFor={id}>
@@ -17,7 +19,7 @@ export default function CurrencySelect({ label, value, onChange }) {
       >
         {CURRENCIES.map((c) => (
           <option key={c.code} value={c.code}>
-            {`${c.flag} ${c.code} — ${c.name}`}
+            {`${c.flag} ${c.code} — ${currencyName(c.code)}`}
           </option>
         ))}
       </select>

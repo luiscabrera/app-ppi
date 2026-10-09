@@ -7,13 +7,19 @@ import {
 } from "../test/fixtures";
 
 describe("fetchRates", () => {
-  it("usa la fuente principal y se queda sólo con las 4 monedas", async () => {
+  it("usa la fuente principal y se queda sólo con las 5 monedas", async () => {
     const fetchMock = vi
       .spyOn(globalThis, "fetch")
       .mockImplementation(() => jsonResponse(erApiResponse));
     const data = await fetchRates();
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(data.rates).toEqual({ USD: 1, EUR: 0.86, BRL: 5.4, PYG: 7100 });
+    expect(data.rates).toEqual({
+      USD: 1,
+      EUR: 0.86,
+      BRL: 5.4,
+      ARS: 1400,
+      PYG: 7100,
+    });
     expect(data.updatedAt).toBe(new Date(1791504001 * 1000).toISOString());
     expect(data.precision).toBe("datetime");
     expect(data.source.name).toBe("ExchangeRate-API");
@@ -26,7 +32,13 @@ describe("fetchRates", () => {
         : jsonResponse(currencyApiResponse),
     );
     const data = await fetchRates();
-    expect(data.rates).toEqual({ USD: 1, EUR: 0.87, BRL: 5.5, PYG: 7200 });
+    expect(data.rates).toEqual({
+      USD: 1,
+      EUR: 0.87,
+      BRL: 5.5,
+      ARS: 1450,
+      PYG: 7200,
+    });
     expect(data.updatedAt).toBe("2026-10-09T00:00:00Z");
     expect(data.precision).toBe("date");
   });

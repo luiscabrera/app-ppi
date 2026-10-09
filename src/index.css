@@ -16,8 +16,10 @@
   color-scheme: light;
 }
 
+/* Modo oscuro: sigue al sistema salvo que el usuario haya elegido otro tema
+   (atributo data-theme en <html>, ver useTheme y el script de index.html). */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --brand-dark: #070a24;
     --accent: #3d8bfd;
     --hero: #15306b;
@@ -34,6 +36,24 @@
     --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     color-scheme: dark;
   }
+}
+
+:root[data-theme="dark"] {
+  --brand-dark: #070a24;
+  --accent: #3d8bfd;
+  --hero: #15306b;
+  --accent-soft: #17223d;
+  --accent-ring: rgba(61, 139, 253, 0.35);
+  --bg: #0d1020;
+  --surface: #161a2e;
+  --text: #e8eaf2;
+  --text-muted: #a0a6ba;
+  --border: #2a3049;
+  --danger: #ff6b6b;
+  --warning: #ffcf70;
+  --warning-soft: #3a2c0c;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
 }
 
 *,

@@ -1,6 +1,6 @@
 # Conversor de monedas
 
-Conversor entre **dólares (USD), euros (EUR), reales (BRL) y guaraníes (PYG)** con la
+Conversor entre **dólares (USD), euros (EUR), reales (BRL), pesos argentinos (ARS) y guaraníes (PYG)** con la
 cotización del día.
 
 **Online:** https://luiscabrera.github.io/app-ppi/
@@ -10,21 +10,24 @@ API pública de cotizaciones.
 
 ## Funcionalidades
 
-- Conversión entre cualquier par de las 4 monedas, cruzando por USD con una sola consulta.
-- Equivalente del monto en las otras tres monedas, a la vista.
-- Formato de Paraguay (`1.500.000,50`); el guaraní se muestra sin decimales.
+- Conversión entre cualquier par de las 5 monedas, cruzando por USD con una sola consulta.
+- Equivalente del monto en las otras cuatro monedas, a la vista.
+- El guaraní se muestra sin decimales.
 - El campo de monto acepta `1.500.000`, `1500000`, `10,50` o `10.50`.
 - Botón para invertir las monedas. Elegir la misma moneda en ambos lados también las invierte.
 - Recuerda el monto y las monedas elegidas.
 - Las cotizaciones se guardan una hora en el navegador. Sin conexión, se siguen mostrando
   las últimas guardadas, con un aviso.
 - Fuente de respaldo automática si la principal falla, con reintento.
-- Accesible (labels, `aria-*`, foco visible), responsive y con modo oscuro.
+- En español (Latinoamérica) e inglés, con un botón de bandera en el encabezado. Los números
+  se adaptan al idioma (`1.500,50` / `1,500.50`) y el monto escrito se convierte al cambiar.
+- Botón de modo claro/oscuro. Mientras no se elija, sigue al sistema operativo.
+- Accesible (labels, `aria-*`, foco visible) y responsive.
 
 ## Fuentes de datos
 
 Las tasas del Banco Central Europeo (que usaba la versión original vía vatcomply) **no incluyen
-el guaraní**, así que se usan estas fuentes, gratuitas y sin API key:
+el guaraní ni el peso argentino**, así que se usan estas fuentes, gratuitas y sin API key:
 
 1. [ExchangeRate-API](https://www.exchangerate-api.com) (`open.er-api.com`): actualiza una vez
    por día.
@@ -32,7 +35,8 @@ el guaraní**, así que se usan estas fuentes, gratuitas y sin API key:
    Cloudflare): se usa como respaldo.
 
 Son cotizaciones de referencia (tipo medio del mercado): sirven como guía, pero no son el valor
-de compra o venta de un banco o una casa de cambios.
+de compra o venta de un banco o una casa de cambios. Para el peso argentino es el tipo de cambio
+oficial: no refleja el dólar blue, MEP ni otras cotizaciones paralelas.
 
 ## Uso
 
@@ -63,22 +67,25 @@ GitHub Actions**.
 
 ```
 src/
-├── config/currencies.js     monedas soportadas (código, nombre, bandera, decimales)
+├── config/currencies.js     monedas soportadas (código, bandera, decimales)
+├── i18n/                    idiomas: textos (messages.js), provider y hook useI18n
 ├── api/rates.js             fuentes de cotizaciones, validación y respaldo
 ├── hooks/
 │   ├── useExchangeRates.js  carga, caché, errores y actualización
+│   ├── useTheme.js          modo claro/oscuro
 │   └── usePersistentState.js
 ├── lib/
 │   ├── convert.js           conversión por cruce contra USD
-│   ├── format.js            formateo y lectura de montos y fechas (es-PY)
+│   ├── format.js            formateo y lectura de montos y fechas según el idioma
 │   └── storage.js           localStorage tolerante a fallos
 ├── components/              UI con CSS Modules
 ├── App.jsx
 └── main.jsx
 ```
 
-Para agregar una moneda alcanza con sumarla en `src/config/currencies.js`, siempre que la fuente
-de datos la publique.
+Para agregar una moneda, sumarla en `src/config/currencies.js` y su nombre en
+`src/i18n/messages.js` (siempre que la fuente de datos la publique). Para agregar un idioma,
+sumarlo en `LANGUAGES` y traducir su bloque de textos en el mismo archivo.
 
 ## Plan de mejoras
 
@@ -87,11 +94,11 @@ de datos la publique.
 | #   | Mejora                                                                        | Motivo                                                                              |
 | --- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | 1   | Cambio de fuente de datos y fuente de respaldo                                | El BCE no publica PYG; antes, si la API caía, la app quedaba cargando para siempre. |
-| 2   | Monedas acotadas a USD, EUR, BRL y PYG, con nombres en español                | Alcance del proyecto.                                                               |
+| 2   | Monedas acotadas a USD, EUR, BRL, ARS y PYG, con nombres en español           | Alcance del proyecto.                                                               |
 | 3   | Validación de la respuesta de la API                                          | Si faltaba una tasa, la app se rompía.                                              |
 | 4   | Estados de carga, error con reintento y caché sin conexión                    | No había manejo de errores.                                                         |
 | 5   | Fecha de actualización correcta                                               | La original decía "UTC" pero mostraba la hora local, y corría la fecha un día.      |
-| 6   | Formato y lectura de montos de Paraguay con `Intl.NumberFormat`               | Se usaba `toFixed(6)`, sin separadores de miles.                                    |
+| 6   | Formato y lectura de montos según el idioma con `Intl.NumberFormat`           | Se usaba `toFixed(6)`, sin separadores de miles.                                    |
 | 7   | Migración de Create React App (deprecado) a Vite                              | Build más rápido y con mantenimiento activo.                                        |
 | 8   | CSS Modules y variables de diseño, modo oscuro                                | Las clases globales (`.label`, `.container`) chocaban entre sí.                     |
 | 9   | Lógica separada en hooks y funciones puras                                    | Antes los cálculos estaban mezclados con la vista y había prop drilling.            |
@@ -100,6 +107,7 @@ de datos la publique.
 | 12  | Tests (45), ESLint, Prettier y CI en GitHub Actions                           | No había tests.                                                                     |
 | 13  | Limpieza de código y dependencias sin uso                                     |                                                                                     |
 | 14  | Publicación automática en GitHub Pages                                        | Tener la app online con cada cambio.                                                |
+| 15  | Peso argentino, idiomas (español e inglés) y botón de modo oscuro             | Pedidos para el proyecto personal.                                                  |
 
 ### Ideas a futuro
 

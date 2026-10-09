@@ -1,15 +1,23 @@
 <!doctype html>
-<html lang="es">
+<html lang="es-AR">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Conversor de monedas entre dólares, euros, reales y guaraníes con cotizaciones actualizadas."
+      content="Conversor de monedas entre dólares, euros, reales, pesos argentinos y guaraníes con cotizaciones actualizadas."
     />
     <meta name="theme-color" content="#0e1342" />
     <title>Conversor de monedas</title>
+    <script>
+      // Aplica el tema guardado antes de pintar la página (evita un parpadeo).
+      try {
+        var theme = JSON.parse(localStorage.getItem("app-ppi:theme"));
+        if (theme === "light" || theme === "dark")
+          document.documentElement.dataset.theme = theme;
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>
